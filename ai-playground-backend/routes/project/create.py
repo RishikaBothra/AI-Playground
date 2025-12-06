@@ -1,0 +1,31 @@
+from fastapi import APIRouter, Depends, Request, HTTPException
+from database import get_db
+from sqlalchemy.orm import Session
+from models import Project
+
+router = APIRouter()
+
+@router.post("/create")
+async def createProject(request:Request,db: Session = Depends(get_db)):
+    body = await request.json()
+    projectName = body.get("projectName")
+    projectDescription = body.get("projectDescription")
+
+    user_id = request.state.user
+
+    # Store project details in the database
+    newProject = Project(
+        name=projectName, 
+        description=projectDescription,
+        user_id=user_id
+    )
+    db.add(newProject)
+    db.commit()
+    db.refresh(newProject)
+    return {"message": "Project created successfully", 
+            "project": {
+                "name": newProject.name, 
+                "description": newProject.description,
+                "user_id": newProject.user_id
+            }
+              }

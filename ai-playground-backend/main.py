@@ -1,100 +1,33 @@
-from fastapi import Depends, FastAPI, HTTPException, Request
+#imports
+from fastapi import Depends, FastAPI, Request
 from requests import Session
 from auth.jwthandler import create_access_token
 from bots import geminibot, sarvambot
 from dotenv import load_dotenv
-from database import SessionLocal
-from models import Project
-from database import engine, Base
 from database import get_db
 from models import User
 from passlib.context import CryptContext
 from middleware.auth_middleware import auth_middleware
-
 from passlib.context import CryptContext
-pwd = CryptContext(schemes=["bcrypt"], deprecated="auto")
-pwd.hash("hello123")
+from routes import projects
 
-
-
-load_dotenv()
+#password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+load_dotenv()
 
-
+#routes
 app = FastAPI()
 app.include_router(sarvambot.router)
 app.include_router(geminibot.router)
 app.middleware("http")(auth_middleware)
+app.include_router(projects.project)
 
+#testing route
 @app.get("/")
-
 def home():
     return {"message": "Hello, working!!"}
 
-@app.post("/createProject")
-async def createProject(request:Request,db: Session = Depends(get_db)):
-    body = await request.json()
-    projectName = body.get("projectName")
-    projectDescription = body.get("projectDescription")
-
-    user_id = request.state.user
-
-    # Store project details in the database
-    newProject = Project(
-        name=projectName, 
-        description=projectDescription,
-        user_id=user_id
-    )
-    db.add(newProject)
-    db.commit()
-    db.refresh(newProject)
-    return {"message": "Project created successfully", 
-            "project": {
-                "name": newProject.name, 
-                "description": newProject.description,
-                "user_id": newProject.user_id
-            }
-              }
-
-@app.get("/getProjects")
-def get_projects(db: Session = Depends(get_db)):
-    projects = db.query(Project).all()
-
-    return {
-        "projects": [
-            {"name": p.name, "description": p.description} for p in projects
-        ]
-    }
-
-@app.put("/updateProject/{project_id}")
-async def update_project(project_id: int, request: Request, db: Session = Depends(get_db)):
-    body = await request.json()
-
-    project = db.query(Project).filter(Project.id == project_id).first()
-    if not project:
-        raise HTTPException(status_code=404, detail="Project not found")
-    
-    project.name = body.get("projectName", project.name)
-    project.description = body.get("projectDescription", project.description)
-    db.commit()
-    db.refresh(project)
-    return {"message": "Project updated successfully", 
-            "project": {
-                "name": project.name, 
-                "description": project.description
-            }
-           }
-
-@app.delete("/deleteProject/{project_id}")
-def delete_project(project_id: int, db: Session = Depends(get_db)):
-    project = db.query(Project).filter(Project.id == project_id).first()
-    if not project:
-        raise HTTPException(status_code=404, detail="Project not found")
-    
-    db.delete(project)
-    db.commit()
-    return {"message": "Project deleted successfully"}
-
+#authentication routes
 @app.post("/signin")
 async def signin(request:Request,db:Session = Depends(get_db)):
     body = await request.json()
