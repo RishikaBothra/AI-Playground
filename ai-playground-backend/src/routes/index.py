@@ -1,9 +1,9 @@
 #imports
 from fastapi import APIRouter
-from routes.project import create
-from routes.project import update
-from routes.project import get
-from routes.project import delete
+from src.routes.project import create
+from src.routes.project import update
+from src.routes.project import get
+from src.routes.project import delete
 
 #constants
 project = APIRouter(prefix="/api/v1/projects")

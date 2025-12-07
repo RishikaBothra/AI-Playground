@@ -1,15 +1,14 @@
 #imports
 from fastapi import Depends, FastAPI, Request
 from requests import Session
-from auth.jwthandler import create_access_token
-from bots import geminibot, sarvambot
+from src.service.jwthandler import create_access_token
+from src.routes.bots import geminibot, sarvambot
 from dotenv import load_dotenv
-from database import get_db
-from models import User
+from src.database.database import get_db
 from passlib.context import CryptContext
-from middleware.auth_middleware import auth_middleware
-from passlib.context import CryptContext
-from routes import projects
+from src.middleware.auth_middleware import auth_middleware
+from src.database.models.usermodel import User
+from src.routes import index
 
 #password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -20,7 +19,7 @@ app = FastAPI()
 app.include_router(sarvambot.router)
 app.include_router(geminibot.router)
 app.middleware("http")(auth_middleware)
-app.include_router(projects.project)
+app.include_router(index.project)
 
 #testing route
 @app.get("/")

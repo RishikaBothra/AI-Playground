@@ -29,7 +29,7 @@
 
 from fastapi import Request
 from fastapi.responses import JSONResponse
-from auth.jwthandler import verify_access_token
+from src.service.jwthandler import verify_access_token
 
 async def auth_middleware(request: Request, call_next):
 
