@@ -52,3 +52,5 @@ build/
 
 # Node (if you ever add a frontend)
 node_modules/
+
+*.db
