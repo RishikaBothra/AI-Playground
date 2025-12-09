@@ -11,4 +11,5 @@ class Project(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
 
     owner = relationship("User", back_populates="projects")
+    chats = relationship("Chat", back_populates="project", cascade="all, delete-orphan")
 

@@ -41,6 +41,8 @@ async def auth_middleware(request: Request, call_next):
     token = request.headers.get("Authorization")
     if not token:
         return JSONResponse({"error": "No token provided"}, status_code=401)
+    if not token.startswith("Bearer "):
+        return JSONResponse({"error": "Invalid token format"}, status_code=401)
 
     token = token.replace("Bearer ", "")
     payload = verify_access_token(token)

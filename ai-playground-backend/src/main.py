@@ -8,7 +8,7 @@ from src.database.database import get_db
 from passlib.context import CryptContext
 from src.middleware.auth_middleware import auth_middleware
 from src.database.models.usermodel import User
-from src.routes import index
+from routes import indexchat, indexproject
 
 #password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -19,7 +19,8 @@ app = FastAPI()
 app.include_router(sarvambot.router)
 app.include_router(geminibot.router)
 app.middleware("http")(auth_middleware)
-app.include_router(index.project)
+app.include_router(indexproject.project)
+app.include_router(indexchat.chat)
 
 #testing route
 @app.get("/")
