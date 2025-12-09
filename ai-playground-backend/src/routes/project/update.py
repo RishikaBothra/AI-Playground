@@ -15,6 +15,11 @@ async def update_project(project_id: int, request: Request, db: Session = Depend
     
     project.name = body.get("projectName", project.name)
     project.description = body.get("projectDescription", project.description)
+
+    if project.name is None or project.description is None:
+        raise HTTPException(status_code=400, detail="Project name and description are required")
+    if not isinstance(project.name, str) or not isinstance(project.description, str):
+        raise HTTPException(status_code=400, detail="Project name and description must be strings")
     db.commit()
     db.refresh(project)
     return {"message": "Project updated successfully", 

@@ -1,5 +1,5 @@
 #imports
-from fastapi import Depends, FastAPI, Request
+from fastapi import Depends, FastAPI, HTTPException, Request
 from requests import Session
 from src.service.jwthandler import create_access_token
 from src.routes.bots import geminibot, sarvambot
@@ -34,6 +34,13 @@ async def signin(request:Request,db:Session = Depends(get_db)):
     email = body.get("email")
     password = body.get("password")
 
+    if email is None or password is None:
+        raise HTTPException(status_code=400, detail="Email and password are required")
+    if not isinstance(email, str) or not isinstance(password, str):
+        raise HTTPException(status_code=400, detail="Email and password must be strings")
+    if "@" not in email:
+        raise HTTPException(status_code=400, detail="Invalid email address")
+
     user = db.query(User).filter(User.email == email).first()
 
     if not user:
@@ -57,6 +64,13 @@ async def signup(request: Request,db:Session = Depends(get_db)):
     existing = db.query(User).filter(User.email == email).first()
     if existing:
         return {"error": "User with this email already exists."}
+    
+    if not isinstance(username, str) or not isinstance(email, str) or not isinstance(password, str):
+        raise HTTPException(status_code=400, detail="Username, email and password must be strings")
+    if username is None or email is None or password is None:
+        raise HTTPException(status_code=400, detail="Username, email and password are required")
+    if "@" not in email:
+        raise HTTPException(status_code=400, detail="Invalid email address")
     
     if len(password) >72:
         password = password[:72]

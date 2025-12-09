@@ -13,6 +13,11 @@ async def createProject(request:Request,db: Session = Depends(get_db)):
 
     user_id = request.state.user
 
+    if projectName is None or projectDescription is None:
+        raise HTTPException(status_code=400, detail="Project name and description are required")
+    if not isinstance(projectName, str) or not isinstance(projectDescription, str):
+        raise HTTPException(status_code=400, detail="Project name and description must be strings")
+
     # Store project details in the database
     newProject = Project(
         name=projectName, 
