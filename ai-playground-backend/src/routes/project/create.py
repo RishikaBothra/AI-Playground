@@ -8,20 +8,25 @@ router = APIRouter()
 @router.post("/create")
 async def createProject(request:Request,db: Session = Depends(get_db)):
     body = await request.json()
-    projectName = body.get("projectName")
-    projectDescription = body.get("projectDescription")
+    name = body.get("name")
+    description = body.get("description")
 
     user_id = request.state.user
 
-    if projectName is None or projectDescription is None:
+    if name is None or description is None:
         raise HTTPException(status_code=400, detail="Project name and description are required")
-    if not isinstance(projectName, str) or not isinstance(projectDescription, str):
+    if not isinstance(name, str) or not isinstance(description, str):
         raise HTTPException(status_code=400, detail="Project name and description must be strings")
+    
+    #check if a project with same name exists for the user
+    existing_project = db.query(Project).filter(Project.name == name, Project.user_id == user_id).first()
+    if existing_project:
+        raise HTTPException(status_code=400, detail="Project with this name already exists")
 
     # Store project details in the database
     newProject = Project(
-        name=projectName, 
-        description=projectDescription,
+        name=name, 
+        description=description,
         user_id=user_id
     )
     db.add(newProject)
