@@ -2,13 +2,13 @@
 from fastapi import Depends, FastAPI, HTTPException, Request
 from requests import Session
 from src.service.jwthandler import create_access_token
-from src.routes.bots import geminibot, sarvambot
+from src.bots import geminibot, sarvambot
 from dotenv import load_dotenv
 from src.database.database import get_db
 from passlib.context import CryptContext
 from src.middleware.auth_middleware import auth_middleware
 from src.database.models.usermodel import User
-from routes import indexchat, indexproject
+from src.routes.index import indexchat, indexproject
 
 #password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -62,9 +62,12 @@ async def signup(request: Request,db:Session = Depends(get_db)):
     email = body.get("email")
     password = body.get("password")[:72]
 
-    existing = db.query(User).filter(User.email == email).first()
-    if existing:
+    Email = db.query(User).filter(User.email == email).first()
+    Username = db.query(User).filter(User.username == username).first()
+    if Email:
         return {"error": "User with this email already exists."}
+    if Username:
+        return {"error": "User with this username already exists."}
     
     if not isinstance(username, str) or not isinstance(email, str) or not isinstance(password, str):
         raise HTTPException(status_code=400, detail="Username, email and password must be strings")
