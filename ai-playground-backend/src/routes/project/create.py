@@ -34,6 +34,7 @@ async def createProject(request:Request,db: Session = Depends(get_db)):
     db.refresh(newProject)
     return {"message": "Project created successfully", 
             "project": {
+                "id": newProject.id,
                 "name": newProject.name, 
                 "description": newProject.description,
                 "user_id": newProject.user_id
