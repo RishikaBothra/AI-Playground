@@ -23,3 +23,12 @@ async def chatSarvam(request:Request):
         {"role": role, "content": context}
 ])
     return {"response": response.choices[0].message.content}
+
+
+async def get_response(model_name: str | None, prompt: str) -> str:
+
+    try:
+        resp = client.chat.completions(messages=[{"role": "user", "content": prompt}])
+        return resp.choices[0].message.content
+    except Exception as e:
+        return f"Error calling Sarvam: {e}"

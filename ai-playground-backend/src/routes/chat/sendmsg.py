@@ -30,8 +30,10 @@ async def send_message(chat_id:int,request:Request,db:Session = Depends(get_db))
     
     history_texts = "\n".join([f"User: {msg.user_message}\nBot: {msg.bot_response}" for msg in history])
 
+    project_description = chat.project.description if getattr(chat, "project", None) and getattr(chat.project, "description", None) else "No description"
+
     full_context = f"""
-Project description: {Project.description and Chat.description or "No description"}
+Project description: {project_description}
 chat room info : {chat.description}
 
 Previous messages:

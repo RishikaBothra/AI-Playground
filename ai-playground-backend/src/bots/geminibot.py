@@ -32,3 +32,12 @@ async def chatGemini(request:Request):
     response = model.generate_content(prompt)
 
     return {"response": response.text}
+
+
+async def get_response(model_name: str | None, prompt: str) -> str:
+    try:
+        model_to_use = genai.GenerativeModel(model_name) if model_name else genai.GenerativeModel("gemini-2.5-flash")
+        resp = model_to_use.generate_content(prompt)
+        return getattr(resp, "text", str(resp))
+    except Exception as e:
+        return f"Error calling Gemini: {e}"
