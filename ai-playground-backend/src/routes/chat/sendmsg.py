@@ -43,7 +43,6 @@ User: {user_message}
 """
     ai_reply = await aicall(
         bot_provider=chat.bot_provider, 
-        model_name=chat.model_name, 
         context=full_context
         )
     
@@ -53,6 +52,10 @@ User: {user_message}
         bot_response = ai_reply
     ))
     db.commit()
-    return {"message": "Message sent successfully",
-            "chat_id": chat_id}
+    return {
+    "message": "Message sent successfully",
+    "chat_id": chat_id,
+    "user_message": user_message,
+    "bot_reply": ai_reply
+}
     

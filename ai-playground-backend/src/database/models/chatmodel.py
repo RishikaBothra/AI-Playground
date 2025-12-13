@@ -11,7 +11,6 @@ class Chat(Base):
     description = Column(String)
     project_id = Column(Integer, ForeignKey("projects.id"))
     bot_provider = Column(String)
-    model_name = Column(String)
     created_at = Column(String, default=datetime.utcnow().isoformat)
 
     project = relationship("Project", back_populates="chats")

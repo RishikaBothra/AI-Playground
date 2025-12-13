@@ -12,14 +12,13 @@ async def createchat(project_id:int,request:Request,db:Session = Depends(get_db)
     name = body.get("name")
     description = body.get("description")
     bot_provider = body.get("bot_provider")
-    model_name = body.get("model_name")
 
     user_id = getattr(request.state,"user", None)
     if user_id is None:
         raise HTTPException(status_code=401, detail="Unauthorized")
-    if name is None or description is None or bot_provider is None or model_name is None:
+    if name is None or description is None or bot_provider is None:
         raise HTTPException(status_code=400, detail="All fields are required")
-    if not isinstance(name, str) or not isinstance(description, str) or not isinstance(bot_provider, str) or not isinstance(model_name, str):
+    if not isinstance(name, str) or not isinstance(description, str) or not isinstance(bot_provider, str):
         raise HTTPException(status_code=400, detail="All fields must be strings")
     
     project = db.query(Project).filter(Project.id == project_id, Project.user_id == user_id).first()
@@ -31,7 +30,6 @@ async def createchat(project_id:int,request:Request,db:Session = Depends(get_db)
         description = description,
         project_id = project_id,
         bot_provider = bot_provider,
-        model_name = model_name
     )
     db.add(newchat)
     db.commit()
@@ -43,6 +41,5 @@ async def createchat(project_id:int,request:Request,db:Session = Depends(get_db)
                 "description": newchat.description,
                 "project_id": newchat.project_id,
                 "bot_provider": newchat.bot_provider,
-                "model_name": newchat.model_name
             }
     }
