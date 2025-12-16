@@ -30,7 +30,6 @@ ENV/
 
 # Environment variables
 .env
-.env.*
 
 # Uvicorn/coverage
 *.coverage
