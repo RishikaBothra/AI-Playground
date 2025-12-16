@@ -24,14 +24,20 @@ async def createProject(request:Request,db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Project with this name already exists")
 
     # Store project details in the database
-    newProject = Project(
-        name=name, 
-        description=description,
-        user_id=user_id
-    )
-    db.add(newProject)
-    db.commit()
-    db.refresh(newProject)
+    try:
+        newProject = Project(
+            name=name, 
+            description=description,
+            user_id=user_id
+        )
+        db.add(newProject)
+        db.commit()
+        db.refresh(newProject)
+    except Exception as e:
+        db.rollback()
+        if "UNIQUE constraint failed" in str(e) or "unique constraint" in str(e).lower():
+            raise HTTPException(status_code=400, detail="Project with this name already exists")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
     return {"message": "Project created successfully", 
             "project": {
                 "id": newProject.id,

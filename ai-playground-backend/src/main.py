@@ -1,5 +1,6 @@
 #imports
 from fastapi import Depends, FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
 from requests import Session
 from src.service.jwthandler import create_access_token
 from src.bots import geminibot, sarvambot
@@ -16,6 +17,15 @@ load_dotenv()
 
 #routes
 app = FastAPI()
+
+# CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.include_router(sarvambot.router)
 app.include_router(geminibot.router)
 app.middleware("http")(auth_middleware)

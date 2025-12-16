@@ -33,6 +33,10 @@ from src.service.jwthandler import verify_access_token
 
 async def auth_middleware(request: Request, call_next):
 
+    # Always allow CORS preflight without auth
+    if request.method == "OPTIONS":
+        return await call_next(request)
+
     # Skip auth for public routes
     if request.url.path in ["/signin", "/signup", "/"]:
         return await call_next(request)

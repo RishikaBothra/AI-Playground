@@ -16,7 +16,7 @@ def get_projects(request: Request, db: Session = Depends(get_db)):
 
     return {
         "projects": [
-            {"name": p.name, "description": p.description} for p in projects
+            {"id": p.id, "name": p.name, "description": p.description} for p in projects
         ]
     }
     
