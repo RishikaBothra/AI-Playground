@@ -33,7 +33,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), "src")))
 
 # import Base from your database
-from src.database.database import Base
+from database.database import Base
 
 target_metadata = Base.metadata
 
