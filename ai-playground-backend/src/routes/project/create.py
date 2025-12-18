@@ -25,11 +25,7 @@ async def createProject(request:Request,db: Session = Depends(get_db)):
 
     # Store project details in the database
     try:
-        newProject = Project(
-            name=name, 
-            description=description,
-            user_id=user_id
-        )
+        newProject = Project(name=name, description=description, user_id=user_id)
         db.add(newProject)
         db.commit()
         db.refresh(newProject)
