@@ -4,7 +4,7 @@ import api from "@/api/axios"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Message } from "@/types"
+import { Message } from "@/types/interface"
 
 export default function ChatRoom(){
     const { chatId } = useParams()

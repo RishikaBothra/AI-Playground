@@ -1,44 +1,30 @@
-import { BrowserRouter,Routes,Route } from "react-router-dom";
-import Login from "./auth/Login";
-import Signup from "./auth/Signup";
-import Projects from "./pages/Projects";
-import Chats from "./pages/Chats";
-import ChatRoom from "./pages/ChatRoom";
-import ProtectedRoute from "./components/ProtectedRoutes";
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+import Login from "@/auth/Login"
+import Dashboard from "./pages/Dashboard"
+import Projects from "@/pages/Projects"
+import Chats from "@/pages/Chats"
+import Settings from "@/pages/Settings"
+import ProtectedRoute from "@/components/ProtectedRoutes"
 
-function App(){
+export default function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+
         <Route
-          path="/projects"
+          path="/dashboard"
           element={
             <ProtectedRoute>
-              <Projects />
+              <Dashboard />
             </ProtectedRoute>
           }
-        />
-        <Route
-          path="/projects/:projectId/chats"
-          element={
-            <ProtectedRoute>
-              <Chats />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/chats/:chatId"
-          element={
-            <ProtectedRoute>
-              <ChatRoom />
-            </ProtectedRoute>
-          }
-        />
+        >
+          <Route path="projects" element={<Projects />} />
+          <Route path="chats" element={<Chats />} />
+          <Route path="settings" element={<Settings />} />
+        </Route>
       </Routes>
     </BrowserRouter>
-  );
+  )
 }
-
-export default App;
