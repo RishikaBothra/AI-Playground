@@ -1,24 +1,13 @@
 {
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ],
   "compilerOptions": {
-    "target": "ES2017",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "jsx": "react-jsx",
-    "jsxImportSource": "react",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "allowImportingTsExtensions": false,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
-    },
-    "strict": false,
-    "skipLibCheck": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "forceConsistentCasingInFileNames": true,
-    "downlevelIteration": true,
-    "types": ["vite/client"]
-  },
-  "include": ["src"]
+      "@/*": ["./src/*"]
+    }
+  }
 }

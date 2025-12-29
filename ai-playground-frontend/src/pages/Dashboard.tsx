@@ -1,14 +1,9 @@
-import { ReactNode } from "react"
 import { Outlet } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { NavLink, useNavigate } from "react-router-dom"
 
-interface Props {
-  children: ReactNode
-}
-
-export default function Dashboard({ children }: Props) {
+export default function Dashboard() {
   const navigate = useNavigate()
 
   const logout = () => {

@@ -25,15 +25,15 @@ export default function App() {
           path="/dashboard"
           element={
             <ProtectedRoute>
-              <Dashboard>
-                <Route index element={<Navigate to="projects" replace />} />
-                <Route path="projects" element={<Projects />} />
-                <Route path="chats" element={<Chats />} />
-                <Route path="settings" element={<Settings />} />
-              </Dashboard>
+              <Dashboard />
             </ProtectedRoute>
           }
-        />
+        >
+          <Route index element={<Navigate to="projects" replace />} />
+          <Route path="projects" element={<Projects />} />
+          <Route path="chats" element={<Chats />} />
+          <Route path="settings" element={<Settings />} />
+        </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
