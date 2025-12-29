@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react"
 import api from "@/api/axios"
 import { Card, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { useNavigate } from "react-router-dom"
-import { Project } from "@/types/interface"
+import type { Project } from "@/types/interface"
 
 export default function Projects(){
     const [projects, setProjects] = useState<Project[]>([])
