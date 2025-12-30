@@ -2,7 +2,13 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import api from "@/api/axios"
 
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
@@ -29,7 +35,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-muted/40">
-      <Card className="w-90 shadow-lg">
+      <Card className="w-[380px] shadow-lg">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl">Welcome back</CardTitle>
           <CardDescription>
@@ -45,7 +51,7 @@ export default function Login() {
             <Input
               id="email"
               type="email"
-              placeholder="rishika@example.com"
+              placeholder="Email@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -69,10 +75,28 @@ export default function Login() {
           >
             {loading ? "Logging in..." : "Login"}
           </Button>
+
+          {/* Divider */}
+          <div className="relative">
+            <Separator />
+            <span className="absolute left-1/2 -translate-x-1/2 -top-2 bg-background px-2 text-xs text-muted-foreground">
+              OR
+            </span>
+          </div>
+
+          {/* Sign up redirect */}
+          <div className="text-center text-sm">
+            <span className="text-muted-foreground">New here?</span>{" "}
+            <Button
+              variant="link"
+              className="px-1"
+              onClick={() => navigate("/signin")}
+            >
+              Create an account
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>
   )
 }
-
-

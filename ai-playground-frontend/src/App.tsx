@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import Login from "@/auth/Login"
+import Signin from "@/auth/Signin"
 import Dashboard from "./pages/Dashboard"
 import Projects from "@/pages/Projects"
 import Chats from "@/pages/Chats"
@@ -20,6 +21,7 @@ export default function App() {
           }
         />
         <Route path="/login" element={<Login />} />
+        <Route path="/signin" element={<Signin />} />
 
         <Route
           path="/dashboard"
