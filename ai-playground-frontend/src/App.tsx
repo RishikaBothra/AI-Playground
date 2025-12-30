@@ -1,11 +1,12 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
-import Login from "@/auth/Login"
-import Signin from "@/auth/Signin"
-import Dashboard from "./pages/Dashboard"
-import Projects from "@/pages/Projects"
-import Chats from "@/pages/Chats"
-import Settings from "@/pages/Settings"
-import ProtectedRoute from "@/components/ProtectedRoutes"
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Login from "@/auth/Login";
+import Signin from "@/auth/Signin";
+import Dashboard from "./pages/Dashboard";
+import Projects from "@/pages/Projects";
+import Chats from "@/pages/Chats";
+import Settings from "@/pages/Settings";
+import ProtectedRoute from "@/components/ProtectedRoutes";
+import AuthRoute from "./auth/authroute";
 
 export default function App() {
   return (
@@ -15,13 +16,30 @@ export default function App() {
           path="/"
           element={
             <Navigate
-              to={localStorage.getItem("token") ? "/dashboard/projects" : "/login"}
+              to={
+                localStorage.getItem("token") ? "/dashboard/projects" : "/login"
+              }
               replace
             />
           }
         />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signin" element={<Signin />} />
+        <Route
+          path="/login"
+          element={
+            <AuthRoute>
+              <Login />
+            </AuthRoute>
+          }
+        />
+
+        <Route
+          path="/signin"
+          element={
+            <AuthRoute>
+              <Signin />
+            </AuthRoute>
+          }
+        />
 
         <Route
           path="/dashboard"
@@ -39,5 +57,5 @@ export default function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
-  )
+  );
 }
