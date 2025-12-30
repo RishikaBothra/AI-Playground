@@ -83,10 +83,30 @@ return (
           <Button
             className="w-full"
             onClick={handleLogin}
-            disabled={loading || !name || !email || !password}
+            disabled={loading || !email || !password}
           >
-            {loading ? "Signing in..." : "Sign In"}
+            {loading ? "Logging in..." : "Login"}
           </Button>
+
+          {/* Divider */}
+          <div className="relative">
+            <Separator />
+            <span className="absolute left-1/2 -translate-x-1/2 -top-2 bg-background px-2 text-xs text-muted-foreground">
+              OR
+            </span>
+          </div>
+
+          {/* Sign up redirect */}
+          <div className="text-center text-sm">
+            <span className="text-muted-foreground">Already have an account?</span>{" "}
+            <Button
+              variant="link"
+              className="px-1"
+              onClick={() => navigate("/login")}
+            >
+              Login here!!
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>
