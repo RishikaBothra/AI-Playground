@@ -9,43 +9,78 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card"
+
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert"
+
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 
-export default function Login() {
+export default function Signin() {
   const navigate = useNavigate()
+
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  
 
-  const handleLogin = async () => {
+  const handleSignin = async () => {
     try {
       setLoading(true)
-      const response = await api.post("/auth/login", { email, password })
-      localStorage.setItem("token", response.data.token)
+      setError(null)
+
+      const response = await api.post("/signin", {email, password })
+
+      if (response.data?.error) {
+        setError(response.data.error)
+        return
+      }
+      localStorage.setItem("token", response.data.access_token)
+
+      if (response.data?.error) {
+        setError(response.data.error)
+        return
+      }
+      // proceed when signup is successful
+      localStorage.setItem("token", response.data.access_token)
       navigate("/dashboard/projects")
-    } catch (error) {
-      console.error("Login failed:", error)
+
+    } catch (err: any) {
+      setError(
+        err.response?.data?.error ||
+        err.response?.data?.detail ||
+        "Signup failed. Please try again."
+      )
     } finally {
       setLoading(false)
     }
   }
 
-  return (
+return (
     <div className="min-h-screen flex items-center justify-center bg-muted/40">
       <Card className="w-[380px] shadow-lg">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl">Welcome back</CardTitle>
+          <CardTitle className="text-2xl">Welcome Back</CardTitle>
           <CardDescription>
             Enter your credentials to access your account
           </CardDescription>
         </CardHeader>
 
         <Separator />
+        <CardContent className="space-y-4">
+        {error && (
+          <Alert variant="destructive" className="m-4">
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
 
-        <CardContent className="space-y-4 pt-6">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -53,7 +88,10 @@ export default function Login() {
               type="email"
               placeholder="Email@example.com"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value)
+                if (error) setError(null); // Clear error on input change
+              }}
             />
           </div>
 
@@ -64,16 +102,19 @@ export default function Login() {
               type="password"
               placeholder="••••••••"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value)
+                if (error) setError(null); // Clear error on input change
+              }}
             />
           </div>
 
           <Button
             className="w-full"
-            onClick={handleLogin}
+            onClick={handleSignin}
             disabled={loading || !email || !password}
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? "Signing in..." : "Sign In"}
           </Button>
 
           {/* Divider */}
@@ -90,9 +131,9 @@ export default function Login() {
             <Button
               variant="link"
               className="px-1"
-              onClick={() => navigate("/signin")}
+              onClick={() => navigate("/signup")}
             >
-              Create an account
+              Sign-up here!!
             </Button>
           </div>
         </CardContent>
