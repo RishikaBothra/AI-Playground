@@ -3,10 +3,15 @@ import Login from "@/auth/Sign-up";
 import Signin from "@/auth/Sign-in";
 import Dashboard from "./pages/Dashboard";
 import Projects from "@/pages/Projects";
-import Chats from "@/pages/Chats";
 import Settings from "@/pages/Settings";
 import ProtectedRoute from "@/components/ProtectedRoutes";
 import AuthRoute from "./auth/authroute";
+import CreateProject from "./pages/createproject";
+import EditProject from "./pages/editproject";
+import ChatRoom from "./pages/ChatRoom";
+import CreateChat from "@/pages/createchats";
+import EditChat from "./pages/editchat";
+import ProjectDashboard from "./pages/projectdashboard";
 
 export default function App() {
   return (
@@ -49,10 +54,26 @@ export default function App() {
             </ProtectedRoute>
           }
         >
+          <Route path="projects/create" element={<CreateProject />} />
+          <Route path="projects/edit/:projectId" element={<EditProject />} />
           <Route index element={<Navigate to="projects" replace />} />
           <Route path="projects" element={<Projects />} />
-          <Route path="chats" element={<Chats />} />
           <Route path="settings" element={<Settings />} />
+          
+          {/* Project-specific routes */}
+          <Route path="projects/:projectId" element={<ProjectDashboard />} />
+          <Route
+            path="projects/:projectId/create-chat"
+            element={<CreateChat />}
+          />
+          <Route
+            path="projects/:projectId/chat/:chatId"
+            element={<ChatRoom />}
+          />
+          <Route
+            path="projects/:projectId/chat/:chatId/edit"
+            element={<EditChat />}
+          />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
