@@ -83,7 +83,7 @@ export default function CreateChat() {
             />
           </div>
 
-          {/* 🔽 BOT PROVIDER DROPDOWN */}
+          {/* BOT PROVIDER DROPDOWN */}
           <div>
             <Label>Bot Provider</Label>
             <Select value={botProvider} onValueChange={setBotProvider}>

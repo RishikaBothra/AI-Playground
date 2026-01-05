@@ -29,18 +29,16 @@ export default function EditChat() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // 🔹 OPTIONAL: fetch current chat to prefill bot provider
+  //  fetch current chat to prefill bot provider
   useEffect(() => {
     const fetchChat = async () => {
       try {
-        // If you don’t have this endpoint, you can REMOVE this useEffect
         const res = await api.get(`/api/v1/projects/chat/get/${projectId}`)
         const chat = res.data.chats.find((c: any) => c.id === Number(chatId))
         if (chat) {
           setBotProvider(chat.bot_provider)
         }
       } catch {
-        // ignore (page still works without prefill)
       }
     }
 

@@ -1,3 +1,11 @@
+from fastapi import APIRouter, Depends, Request, HTTPException
+from src.database.database import get_db
+from sqlalchemy.orm import Session
+from src.database.models.projectmodel import Project
+from src.database.models.chatmodel import Chat
+
+router = APIRouter()
+
 @router.patch("/rename/{chat_id}")
 async def rename_chat(chat_id: int, request: Request, db: Session = Depends(get_db)):
     body = await request.json()

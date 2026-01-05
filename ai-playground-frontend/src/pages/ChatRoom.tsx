@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import api from "@/api/axios";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -8,27 +8,58 @@ import type { Message } from "@/types/interface";
 
 export default function ChatRoom() {
   const { chatId } = useParams();
-  const [message, setMessage] = useState<string>("");
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [isFirstMessage, setIsFirstMessage] = useState(true);
 
-  const sendMessage = async () => {
+  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isFirstMessage, setIsFirstMessage] = useState(false); 
+  // 🔴 CHANGED: default false (we decide after loading messages)
+
+  /* ================================
+     🔹 NEW: Load existing messages
+     ================================ */
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const res = await api.get(
+          `/api/v1/projects/chat/messages/${chatId}`
+        );
+
+        setMessages(res.data.messages);
+
+        if (res.data.messages.length === 0) {
+          setIsFirstMessage(true);
+        }
+      } catch (err) {
+        console.error("Failed to load messages", err);
+      }
+    };
+
+    fetchMessages(); // first msg from history 
+  }, [chatId]);
+
+  const sendMessage = async () => { //send message 
     if (!message.trim()) return;
 
-    const res = await api.post(`/api/v1/chats/messages/${chatId}`, { message });
+    const res = await api.post(
+      `/api/v1/projects/chat/messages/${chatId}`,
+      { message }
+    );
 
     setMessages((prev) => [
       ...prev,
       { user: message, bot: res.data.bot_reply },
     ]);
 
-    // 🔹 rename chat on first message
+    /* ================================
+       🔹 Rename chat ONLY once
+       ================================ */
     if (isFirstMessage) {
       const newName = message.split(" ").slice(0, 6).join(" ");
 
-      await api.patch(`/api/v1/chats/rename/${chatId}`, {
-        name: newName,
-      });
+      await api.patch(
+        `/api/v1/projects/chat/rename/${chatId}`,
+        { name: newName }
+      );
 
       setIsFirstMessage(false);
     }
@@ -54,8 +85,11 @@ export default function ChatRoom() {
       <div className="flex gap-2">
         <Input
           value={message}
-          onChange={(e) => setMessage((e.target as HTMLInputElement).value)}
+          onChange={(e) => setMessage(e.target.value)}
           placeholder="Type your message..."
+          onKeyDown={(e) => {
+            if (e.key === "Enter") sendMessage();
+          }}
         />
         <Button onClick={sendMessage}>Send</Button>
       </div>

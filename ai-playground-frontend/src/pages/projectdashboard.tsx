@@ -45,31 +45,67 @@ export default function ProjectDashboard() {
     fetchChats();
   }, [projectId]);
 
-  // create new chat (ChatGPT-style)
   const createChat = async () => {
-    if (!newChatName.trim()) return;
+  const firstMessage = newChatName.trim()
+  if (!firstMessage) return
 
-    try {
-      const res = await api.post(`//api/v1/projects/chat/create/${projectId}` ,{
-        name: newChatName,
-        description: "New chat",
-        bot_provider: "sarvam", // default
-      });
-
-      const ress = await api.post(`/api/v1/projects/chat/create/${projectId}`, {
-        name: newChatName,
+  try {
+    // createing chat
+    const res = await api.post(
+      `api/v1/projects/chat/create/${projectId}`,
+      {
+        name: "New chat",
         description: "New chat",
         bot_provider: "gemini",
-      });
-      navigate(`/dashboard/projects/${projectId}/chat/${ress.data.chat_id}`);
-    } catch (err: any) {
-      setError(
-        err.response?.data?.detail ||
-          err.response?.data?.error ||
-          "Failed to create chat"
-      );
-    }
-  };
+      }
+    )
+
+    const chatId = res.data.chat_id
+
+    // immediately send it to message section
+    await api.post(
+      `api/v1/projects/chat/messages/${chatId}`,
+      { message: firstMessage }
+    )
+
+    // open chat 
+    navigate(`/dashboard/projects/${projectId}/chat/${chatId}`)
+
+    setNewChatName("")
+  } catch (err: any) {
+    setError(
+      err.response?.data?.detail ||
+        err.response?.data?.error ||
+        "Failed to create chat"
+    )
+  }
+}
+
+  
+  // const createChat = async () => {
+  //   if (!newChatName.trim()) return;
+
+  //   try {
+  //     const res = await api.post(`/api/v1/projects/chat/create/${projectId}` ,{
+  //       name: newChatName,
+  //       description: "New chat",
+  //       bot_provider: "sarvam", // default
+  //     });
+
+  //     const ress = await api.post(`/api/v1/projects/chat/create/${projectId}`, {
+  //       name: newChatName,
+  //       description: "New chat",
+  //       bot_provider: "gemini",
+  //     });
+  //     navigate(`/dashboard/projects/${projectId}/chat/${ress.data.chat_id}`);
+  //   } catch (err: any) {
+  //     setError(
+  //       err.response?.data?.detail ||
+  //         err.response?.data?.error ||
+  //         "Failed to create chat"
+  //     );
+  //   }
+  // };
 
   return (
     <div className="p-6 max-w-3xl mx-auto space-y-6">
