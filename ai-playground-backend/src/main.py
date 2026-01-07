@@ -6,13 +6,11 @@ from src.service.jwthandler import create_access_token
 from src.bots import geminibot, sarvambot
 from dotenv import load_dotenv
 from src.database.database import get_db
-from passlib.context import CryptContext
 from src.middleware.auth_middleware import auth_middleware
 from src.database.models.usermodel import User
 from src.routes.index import indexchat, indexproject
+import bcrypt
 
-#password hashing
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 load_dotenv()
 
 #routes
@@ -45,6 +43,8 @@ async def signin(request:Request,db:Session = Depends(get_db)):
     email = body.get("email")
     password = body.get("password")
 
+    print("Signin attempt for email:", email, "and password:", password)
+
     if email is None or password is None:
         raise HTTPException(status_code=400, detail="Email and password are required")
     if not isinstance(email, str) or not isinstance(password, str):
@@ -57,7 +57,7 @@ async def signin(request:Request,db:Session = Depends(get_db)):
     if not user:
         return {"error": "Invalid email"}
     
-    if not pwd_context.verify(password, user.hashed_password):
+    if not bcrypt.checkpw(password.encode('utf-8'), user.hashed_password.encode("utf-8")):
         return {"error": "Invalid password."}
     
     token = create_access_token(data={"user_id": user.id})
@@ -89,7 +89,7 @@ async def signup(request: Request,db:Session = Depends(get_db)):
     if len(password) >72:
         password = password[:72]
 
-    hashed_password = pwd_context.hash(password)
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
     new_user = User(username=username, email=email, hashed_password=hashed_password)
     db.add(new_user)

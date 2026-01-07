@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "@/api/axios";
+import { Trash2 } from "lucide-react";
 
 import {
   Card,
@@ -84,33 +85,24 @@ export default function Projects() {
         {projects.map((project) => (
           <Card
             key={project.id}
-            className="cursor-pointer hover:shadow-lg transition"
+            className="relative cursor-pointer hover:shadow-lg transition"
             onClick={() => navigate(`/dashboard/projects/${project.id}`)}
-
           >
-            <CardHeader className="space-y-2">
+            {/* 🗑 Delete project */}
+            <button
+              className="absolute top-2 right-2 text-muted-foreground hover:text-red-600"
+              onClick={async (e) => {
+                e.stopPropagation();
+                await api.delete(`/api/v1/projects/delete/${project.id}`);
+                setProjects((prev) => prev.filter((p) => p.id !== project.id));
+              }}
+            >
+              <Trash2 size={16} />
+            </button>
+
+            <CardHeader>
               <CardTitle>{project.name}</CardTitle>
-
-              <CardDescription className="text-sm text-muted-foreground">
-                {project.description || "No description"}
-              </CardDescription>
-
-              {/* Delete button */}
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={async (e) => {
-                  e.stopPropagation(); // prevent card click
-                  await api.delete(
-                    `/api/v1/projects/delete/${project.id}`
-                  );
-                  setProjects((prev) =>
-                    prev.filter((p) => p.id !== project.id)
-                  );
-                }}
-              >
-                Delete
-              </Button>
+              <CardDescription>{project.description}</CardDescription>
             </CardHeader>
           </Card>
         ))}

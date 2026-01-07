@@ -7,6 +7,7 @@ from src.routes.chat import sendmsg
 from src.routes.chat import chatrename
 from src.routes.chat import getmessage
 from src.routes.chat import updatedescription
+from src.routes.chat import delete
 
 #constants
 chat = APIRouter(prefix="/api/v1/projects/chat")
@@ -19,3 +20,4 @@ chat.include_router(sendmsg.router)
 chat.include_router(chatrename.router)
 chat.include_router(getmessage.router)
 chat.include_router(updatedescription.router)
+chat.include_router(delete.router)

@@ -4,9 +4,10 @@ import api from "@/api/axios";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Card, CardHeader,CardDescription,CardTitle} from "@/components/ui/card";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
+import { Trash2 } from "lucide-react";
+
 
 type Chat = {
   id: number;
@@ -81,32 +82,6 @@ export default function ProjectDashboard() {
   }
 }
 
-  
-  // const createChat = async () => {
-  //   if (!newChatName.trim()) return;
-
-  //   try {
-  //     const res = await api.post(`/api/v1/projects/chat/create/${projectId}` ,{
-  //       name: newChatName,
-  //       description: "New chat",
-  //       bot_provider: "sarvam", // default
-  //     });
-
-  //     const ress = await api.post(`/api/v1/projects/chat/create/${projectId}`, {
-  //       name: newChatName,
-  //       description: "New chat",
-  //       bot_provider: "gemini",
-  //     });
-  //     navigate(`/dashboard/projects/${projectId}/chat/${ress.data.chat_id}`);
-  //   } catch (err: any) {
-  //     setError(
-  //       err.response?.data?.detail ||
-  //         err.response?.data?.error ||
-  //         "Failed to create chat"
-  //     );
-  //   }
-  // };
-
   return (
     <div className="p-6 max-w-3xl mx-auto space-y-6">
       {/* Project Header */}
@@ -139,26 +114,33 @@ export default function ProjectDashboard() {
       ) : (
         <div className="space-y-2">
           {chats.map((chat) => (
-            <Card
-              key={chat.id}
-              className="p-3 cursor-pointer hover:bg-muted transition"
-              onClick={() =>
-                navigate(`/dashboard/projects/${projectId}/chat/${chat.id}`)
-              }
-            >
-              <div className="flex items-center justify-between">
-                <p className="font-medium">{chat.name}</p>
+  <Card
+    key={chat.id}
+    className="relative cursor-pointer"
+    onClick={() =>
+      navigate(`/dashboard/projects/${projectId}/chat/${chat.id}`)
+    }
+  >
+    {/* 🗑 Delete chat */}
+    <button
+      className="absolute top-2 right-2 text-muted-foreground hover:text-red-600"
+      onClick={async (e) => {
+        e.stopPropagation();
+        await api.delete(`/api/v1/projects/chat/delete/${chat.id}`);
+        setChats((prev) =>
+          prev.filter((c) => c.id !== chat.id)
+        );
+      }}
+    >
+      <Trash2 size={16} />
+    </button>
 
-                <Badge variant="secondary">
-                  {chat.bot_provider === "gemini" ? "Gemini" : "Sarvam"}
-                </Badge>
-              </div>
-
-              <p className="text-sm text-muted-foreground">
-                {chat.description}
-              </p>
-            </Card>
-          ))}
+    <CardHeader>
+      <CardTitle>{chat.name}</CardTitle>
+      <CardDescription>{chat.description}</CardDescription>
+    </CardHeader>
+  </Card>
+))}
         </div>
       )}
     </div>
