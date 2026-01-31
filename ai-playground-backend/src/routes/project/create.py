@@ -10,6 +10,7 @@ async def createProject(request:Request,db: Session = Depends(get_db)):
     body = await request.json()
     name = body.get("name")
     description = body.get("description")
+    bot_id = body.get("bot_id")
 
     user_id = request.state.user
 

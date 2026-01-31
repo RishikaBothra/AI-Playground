@@ -32,12 +32,24 @@ async def send_message(chat_id:int,request:Request,db:Session = Depends(get_db))
 
     project_description = chat.project.description if getattr(chat, "project", None) and getattr(chat.project, "description", None) else "No description"
 
-    full_context = f"""
-Project description: {project_description}
-chat room info : {chat.description}
+    bot = chat.bot  
 
-Previous messages:
-{history_texts}
+    system_prompt = bot.prompt_template
+
+    full_context = f"""
+    SYSTEM:
+    {system_prompt}
+
+    PROJECT:
+    {project_description}
+
+    CHAT DESCRIPTION:
+    {chat.description}
+
+    PREVIOUS CONVERSATION:
+    {history_texts}
+
+
 
 User: {user_message}
 """

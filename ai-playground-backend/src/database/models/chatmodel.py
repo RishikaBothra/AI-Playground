@@ -1,5 +1,5 @@
 from sqlalchemy import Column, ForeignKey, Integer, String
-from src.database.database import Base
+from src.database.models.base import Base
 from sqlalchemy.orm import relationship
 from datetime import datetime
 
@@ -10,8 +10,9 @@ class Chat(Base):
     name = Column(String)
     description = Column(String)
     project_id = Column(Integer, ForeignKey("projects.id"))
-    bot_provider = Column(String)
+    bot_id = Column(Integer, ForeignKey("bots.id"))
     created_at = Column(String, default=datetime.utcnow().isoformat)
 
     project = relationship("Project", back_populates="chats")
     messages = relationship("Message", back_populates="chat", cascade="all, delete-orphan")
+    bot = relationship("Bot", back_populates="chats")
